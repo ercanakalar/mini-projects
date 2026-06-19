@@ -2,9 +2,42 @@
 name = "api"
 version = "0.1.0"
 edition = "2021"
+default-run = "api"
 
 [dependencies]
-dioxus = { workspace = true, features = ["fullstack"] }
+dioxus = { workspace = true, features = ["web", "router"] }
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+argon2 = "0.5"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+sqlx = { version = "0.8.6", features = [
+    "runtime-tokio",
+    "postgres",
+    "uuid",
+    "chrono",
+    "macros"
+] }
+dotenvy = "0.15"
+jsonwebtoken = { version = "10", features = ["rust_crypto"] }
+rand = "0.9"
+lettre = { version = "0.11", default-features = false, features = [
+    "smtp-transport",
+    "tokio1",
+    "tokio1-rustls-tls",
+    "builder",
+    "hostname",
+    "tracing",
+] }
+axum-extra = { version = "0.10", features = ["typed-header"] }
 
 [features]
-server = ["dioxus/server"]
+web = ["dioxus/web"]
+desktop = ["dioxus/desktop"]
+mobile = ["dioxus/mobile"]
+server = ["dioxus/server"] # <---- add dep:rusqlite

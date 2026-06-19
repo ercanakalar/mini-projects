@@ -2,6 +2,15 @@
 
 Your new workspace contains a member crate for each of the web, desktop and mobile platforms, a `ui` crate for shared components and a `api` crate for shared backend logic:
 
+run-api:
+cargo run -p api
+
+run-ui:
+dx serve --package desktop --platform desktop
+
+run-all:
+(cargo run -p api &) && dx serve --package desktop --platform desktop
+
 ```
 your_project/
 ├─ README.md
@@ -63,6 +72,7 @@ api/
 ### Serving Your App
 
 Navigate to the platform crate of your choice:
+
 ```bash
 cd web
 ```
@@ -72,4 +82,3 @@ and serve:
 ```bash
 dx serve
 ```
-

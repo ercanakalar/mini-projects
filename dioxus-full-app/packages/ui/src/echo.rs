@@ -8,24 +8,49 @@ pub fn Echo() -> Element {
     let mut response = use_signal(|| String::new());
 
     rsx! {
-        document::Link { rel: "stylesheet", href: ECHO_CSS }
-        div {
-            id: "echo",
-            h4 { "ServerFn Echo" }
-            input {
-                placeholder: "Type here to echo...",
-                oninput:  move |event| async move {
-                    let data = api::echo(event.value()).await.unwrap();
-                    response.set(data);
-                },
-            }
+        input {
+            placeholder: "email",
 
-            if !response().is_empty() {
-                p {
-                    "Server echoed: "
-                    i { "{response}" }
+            oninput: move |event| {
+                let mut response = response;
+
+                async move {
+                    match login(event.value(), "password".to_string()).await {
+                        Ok(data) => {
+                            response.set(data.token);
+                        }
+                        Err(err) => {
+                            response.set(format!("Error: {err}"));
+                        }
+                    }
                 }
             }
         }
+
+        p { "{response}" }
     }
+}
+
+async fn login(email: String, password: String) -> Result<LoginResponse, reqwest::Error> {
+    println!("{}", email);
+    reqwest::Client::new()
+        .post("http://localhost:3000/api/auth/signin")
+        .json(&LoginRequest { email, password })
+        .send()
+        .await?
+        .json::<LoginResponse>()
+        .await
+}
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize)]
+pub struct LoginRequest {
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Deserialize)]
+pub struct LoginResponse {
+    pub token: String,
 }
