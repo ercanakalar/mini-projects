@@ -1,5 +1,5 @@
 use axum::routing::{get, put};
-use axum::{Router, middleware};
+use axum::{middleware, Router};
 
 use crate::middleware::permission_guard::permission_guard;
 use crate::{
@@ -18,6 +18,7 @@ pub fn user_routes(state: AppState) -> Router<AppState> {
     let protected = Router::new()
         .with_state(state.clone())
         .route("/{id}", put(update_user))
+        .route("/{id}", get(get_user_by_id))
         .route_layer(middleware::from_fn_with_state(
             state.clone(),
             auth_middleware,

@@ -1,13 +1,10 @@
 pub mod components;
 pub mod models;
 pub mod services;
-
-mod hero;
-pub use hero::Hero;
+pub mod storage;
+pub mod views;
 
 mod navbar;
 pub use navbar::Navbar;
 
-pub use login::Login;
-
-pub use components::auth::login;
+pub use components::SignIn;

@@ -1,7 +1,14 @@
-use axum::Router;
+use axum::{
+    http::{
+        header::{AUTHORIZATION, CONTENT_TYPE},
+        Method,
+    },
+    Router,
+};
 use dotenvy::dotenv;
 use routes::auth_routes::auth_routes;
 use sqlx::PgPool;
+use tower_http::cors::{Any, CorsLayer};
 
 mod domain;
 mod dto;
@@ -45,16 +52,28 @@ async fn main() -> Result<(), AppError> {
         email_service,
     };
 
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([AUTHORIZATION, CONTENT_TYPE]);
+
     let app = Router::new()
         .nest("/api/auth", auth_routes(state.clone()))
         .nest("/api/user", user_routes(state.clone()))
+        .layer(cors)
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:5000")
         .await
         .map_err(|e| AppError::Internal(e.to_string()))?;
 
-    println!("Server running on http://localhost:3000");
+    println!("Server running on http://localhost:5000");
 
     axum::serve(listener, app)
         .await

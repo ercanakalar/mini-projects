@@ -31,7 +31,6 @@ pub async fn login(
     State(state): State<AppState>,
     Json(request): Json<LoginRequest>,
 ) -> Result<impl IntoResponse, AppError> {
-    println!("{},{}", request.email, request.password);
     let data = AuthService::sign_in(&state.db, request.email, request.password).await?;
     Ok(Json(ApiResponse::success("Sign in successfully!", data)))
 }

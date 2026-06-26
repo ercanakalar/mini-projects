@@ -1,9 +1,13 @@
 use dioxus::prelude::*;
-use ui::Hero;
 
 #[component]
 pub fn Home() -> Element {
     rsx! {
-        Hero {}
+        div { id: "blog",
+
+            // Content
+            h1 { "HOME" }
+        
+        }
     }
 }
